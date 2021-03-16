@@ -156,8 +156,8 @@ class _TransformerCarouselWidgetState extends State<TransformerCarouselWidget> {
             if (index == from) {
               return Transform(
                 transform: Matrix4.identity()
-                  ..rotateY(-offset)
-                  ..rotateZ(-offset),
+                  ..rotateY(0.0)
+                  ..rotateZ(0.0),
                 alignment: FractionalOffset.topCenter,
                 child: CarouselPage(
                   onMove: (target) {
@@ -171,8 +171,8 @@ class _TransformerCarouselWidgetState extends State<TransformerCarouselWidget> {
             } else if (index == to) {
               return Transform(
                 transform: Matrix4.identity()
-                  ..rotateY(0.0)
-                  ..rotateZ(0.0),
+                  ..rotateY(offset)
+                  ..rotateZ(offset),
                 alignment: FractionalOffset.topCenter,
                 child: CarouselPage(
                   onMove: (target) {
