@@ -66,9 +66,9 @@ class _TransformerCarouselWidgetState extends State<TransformerCarouselWidget> {
     this._cntrl = PageController();
 
     this._cntrl.addListener(() {
-      //this.setState(() {
-      this._partialPage = this._cntrl.page;
-      //});
+      this.setState(() {
+        this._partialPage = this._cntrl.page;
+      });
 
       //this._dumpListenInfo();
     });
@@ -106,8 +106,7 @@ class _TransformerCarouselWidgetState extends State<TransformerCarouselWidget> {
           print("index: $index from: $from to: $to forward: $_forward");
 
           if (_forward) {
-            if ((index == from) ||
-                ((from - FRACTION) <= index) && (index <= (from + FRACTION))) {
+            if (index == from) {
               return Transform(
                 transform: Matrix4.identity()
                   ..rotateY(offset)
@@ -122,8 +121,7 @@ class _TransformerCarouselWidgetState extends State<TransformerCarouselWidget> {
                       Random().nextInt(256), Random().nextInt(256)),
                 ),
               );
-            } else if ((index == to) ||
-                ((to - FRACTION) <= index) && (index <= (to + FRACTION))) {
+            } else if (index == to) {
               return Transform(
                 transform: Matrix4.identity()
                   ..rotateY(0.0)
@@ -155,8 +153,7 @@ class _TransformerCarouselWidgetState extends State<TransformerCarouselWidget> {
               );
             }
           } else {
-            if ((index == from) ||
-                ((from - FRACTION) <= index) && (index <= (from + FRACTION))) {
+            if (index == from) {
               return Transform(
                 transform: Matrix4.identity()
                   ..rotateY(-offset)
@@ -171,8 +168,7 @@ class _TransformerCarouselWidgetState extends State<TransformerCarouselWidget> {
                       Random().nextInt(256), Random().nextInt(256)),
                 ),
               );
-            } else if ((index == to) ||
-                ((to - FRACTION) <= index) && (index <= (to + FRACTION))) {
+            } else if (index == to) {
               return Transform(
                 transform: Matrix4.identity()
                   ..rotateY(0.0)
@@ -226,8 +222,6 @@ class _TransformerCarouselWidgetState extends State<TransformerCarouselWidget> {
       print("to: ${this._partialPage.floor()}");
     }
   }
-
-  bool shouldBeConsideredFrom(int target, int from) {}
 
   int getTo(int target) {
     int to = target;
