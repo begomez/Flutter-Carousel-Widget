@@ -10,6 +10,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      showPerformanceOverlay: true,
+      debugShowCheckedModeBanner: false,
       title: 'Carousel Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
