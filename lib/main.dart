@@ -10,8 +10,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      showPerformanceOverlay: true,
-      debugShowCheckedModeBanner: false,
       title: 'Carousel Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -36,35 +34,37 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
-      child: TransformerCarouselWidget(),
+      child: PageCarouselWidget(),
     ));
   }
 }
 
-class TransformerCarouselWidget extends StatefulWidget {
-  TransformerCarouselWidget({Key key}) : super(key: key);
+class PageCarouselWidget extends StatefulWidget {
+  PageCarouselWidget({Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _TransformerCarouselWidgetState();
+    return _PageCarouselWidgetState();
   }
 }
 
-class _TransformerCarouselWidgetState extends State<TransformerCarouselWidget> {
+class _PageCarouselWidgetState extends State<PageCarouselWidget> {
   PageController _cntrl;
   double _partialPage = 0.0;
   int _page = 0;
-  bool _forward = true;
-  double PI = 3.141592;
+  bool _goingForward = true;
+  static const double PI = 3.141592;
+
+  _PageCarouselWidgetState() : super();
 
   @override
   void initState() {
     super.initState();
 
-    this._initController();
+    this._initPageController();
   }
 
-  void _initController() {
+  void _initPageController() {
     this._cntrl = PageController();
 
     this._cntrl.addListener(() {
@@ -77,195 +77,133 @@ class _TransformerCarouselWidgetState extends State<TransformerCarouselWidget> {
   }
 
   void _dumpListenInfo() {
-    print("(double) is ${this._partialPage}");
-    print("(ceil) is ${this._partialPage.ceil()}");
-    print("(floor) is ${this._partialPage.floor()}");
+    print("Partial page is ${this._partialPage}");
+    print("Upper partial page is ${this._partialPage.ceil()}");
+    print("Lower partial page is ${this._partialPage.floor()}");
   }
 
-  double FRACTION = 0.3;
+  @override
+  void dispose() {
+    this._disposePageController();
+
+    super.dispose();
+  }
+
+  void _disposePageController() {
+    this._cntrl.dispose();
+  }
 
   @override
   Widget build(BuildContext cntxt) {
     return PageView.builder(
         pageSnapping: true,
         controller: this._cntrl,
-        onPageChanged: (int index) {
-          this.setState(() {
-            this._forward = this._page < index;
-
-            this._page = index;
-          });
+        onPageChanged: (int newPage) {
+          this._storeCurrentPage(newPage);
         },
         itemBuilder: (BuildContext context, int index) {
-          //dumpPageInfo(index);
-          //dumpForwardBackward(index);
+          final offset = (this._partialPage - this._partialPage.toInt());
 
-          final offset = this._partialPage - this._partialPage.toInt();
+          int from = this._getIndexForPageSwipingFrom(index);
+          int to = this._getIndexForPageSwipedTo(index);
 
-          int from = this.getFrom(index);
-          int to = this.getTo(index);
+          print("index: $index from: $from to: $to forward: $_goingForward");
 
-          print("index: $index from: $from to: $to forward: $_forward");
-
-          if (_forward) {
+          if (_goingForward) {
             if (index == from) {
-              return Transform(
-                transform: Matrix4.identity()
-                  ..rotateY(offset)
-                  ..rotateZ(offset),
-                alignment: FractionalOffset.topCenter,
-                child: CarouselPage(
-                  onMove: (target) {
-                    this._cntrl.jumpToPage(target);
-                  },
-                  text: index.toString(),
-                  color: Color.fromARGB(255, Random().nextInt(256),
-                      Random().nextInt(256), Random().nextInt(256)),
-                ),
-              );
+              return _wrapPage(Colors.red, index.toString(), (int page) {
+                this._jumpToPage(page);
+              }, offset);
             } else if (index == to) {
-              return Transform(
-                transform: Matrix4.identity()
-                  ..rotateY(0.0)
-                  ..rotateZ(0.0),
-                alignment: FractionalOffset.topCenter,
-                child: CarouselPage(
-                  onMove: (target) {
-                    this._cntrl.jumpToPage(target);
-                  },
-                  text: index.toString(),
-                  color: Color.fromARGB(255, Random().nextInt(256),
-                      Random().nextInt(256), Random().nextInt(256)),
-                ),
-              );
+              return _wrapPage(Colors.red, index.toString(), (int page) {
+                this._jumpToPage(page);
+              }, 0.0);
             } else {
-              return Transform(
-                transform: Matrix4.identity()
-                  ..rotateY(offset)
-                  ..rotateZ(offset),
-                alignment: FractionalOffset.topCenter,
-                child: CarouselPage(
-                  onMove: (target) {
-                    this._cntrl.jumpToPage(target);
-                  },
-                  text: index.toString(),
-                  color: Color.fromARGB(255, Random().nextInt(256),
-                      Random().nextInt(256), Random().nextInt(256)),
-                ),
-              );
+              return _wrapPage(Colors.red, index.toString(), (int page) {
+                this._jumpToPage(page);
+              }, offset);
             }
           } else {
             if (index == from) {
-              return Transform(
-                transform: Matrix4.identity()
-                  ..rotateY(0.0)
-                  ..rotateZ(0.0),
-                alignment: FractionalOffset.topCenter,
-                child: CarouselPage(
-                  onMove: (target) {
-                    this._cntrl.jumpToPage(target);
-                  },
-                  text: index.toString(),
-                  color: Color.fromARGB(255, Random().nextInt(256),
-                      Random().nextInt(256), Random().nextInt(256)),
-                ),
-              );
+              return _wrapPage(Colors.red, index.toString(), (int page) {
+                this._jumpToPage(page);
+              }, 0.0);
             } else if (index == to) {
-              return Transform(
-                transform: Matrix4.identity()
-                  ..rotateY(offset)
-                  ..rotateZ(offset),
-                alignment: FractionalOffset.topCenter,
-                child: CarouselPage(
-                  onMove: (target) {
-                    this._cntrl.jumpToPage(target);
-                  },
-                  text: index.toString(),
-                  color: Color.fromARGB(255, Random().nextInt(256),
-                      Random().nextInt(256), Random().nextInt(256)),
-                ),
-              );
+              return _wrapPage(Colors.red, index.toString(), (int page) {
+                this._jumpToPage(page);
+              }, offset);
             } else {
-              return Transform(
-                transform: Matrix4.identity()
-                  ..rotateY(-offset)
-                  ..rotateZ(-offset),
-                alignment: FractionalOffset.topCenter,
-                child: CarouselPage(
-                  onMove: (target) {
-                    this._cntrl.jumpToPage(target);
-                  },
-                  text: index.toString(),
-                  color: Color.fromARGB(255, Random().nextInt(256),
-                      Random().nextInt(256), Random().nextInt(256)),
-                ),
-              );
+              return _wrapPage(Colors.red, index.toString(), (int page) {
+                this._jumpToPage(page);
+              }, -offset);
             }
           }
         },
         itemCount: NUM_ITEMS);
   }
 
-  bool focus(int number) => true;
+  void _storeCurrentPage(int newPage) {
+    this.setState(() {
+      this._goingForward = (this._page < newPage);
 
-  bool swipedTo(int number) => true;
-
-  bool swipedFrom(int number) => true;
+      this._page = newPage;
+    });
+  }
 
   bool _isValidIndex(int index) => ((0 <= index) && (index <= NUM_ITEMS - 1));
 
   void dumpForwardBackward(int target) {
-    print("page: $target partial: $_partialPage");
-    if (this._forward) {
-      print("from: ${this._partialPage.floor().toInt()}");
-      print("to: ${(this._partialPage + 1).floor()}");
-    } else {
-      print("from: ${this._partialPage.ceil()}");
-      print("to: ${this._partialPage.floor()}");
-    }
+    print("page: $target partial page: $_partialPage");
+    print("from: ${this._getIndexForPageSwipingFrom(target)}");
+    print("to: ${this._getIndexForPageSwipedTo(target)}");
   }
 
-  int getTo(int target) {
-    int to = target;
-    if (this._forward) {
-      to = (this._partialPage + 1).floor();
+  int _getIndexForPageSwipedTo(int target) {
+    int toIndex = target;
+
+    if (this._goingForward) {
+      toIndex = (this._partialPage + 1).floor();
     } else {
-      to = this._partialPage.floor();
+      toIndex = this._partialPage.floor();
     }
 
-    return to;
+    return toIndex;
   }
 
-  int getFrom(int target) {
-    int from = target;
+  int _getIndexForPageSwipingFrom(int target) {
+    int fromIndex = target;
 
-    if (this._forward) {
-      from = this._partialPage.floor().toInt();
+    if (this._goingForward) {
+      fromIndex = this._partialPage.floor().toInt();
     } else {
-      from = this._partialPage.ceil();
+      fromIndex = this._partialPage.ceil();
     }
 
-    return from;
+    return fromIndex;
   }
 
-  void dumpPageInfo(int index) {
-    print("GONNA BUILD page for ${index}");
-    print("partial page is ${this._partialPage}");
-    print("_prev is ${this._getPrev(index)}");
-    print("_post is ${this._getPost(index)}");
-    print("going forward? ${this._forward}");
-    print("---------------------------------");
+  void _jumpToPage(int target) {
+    this._cntrl.jumpToPage(target);
   }
 
-  int _getPrev(int index) => index - 1;
-
-  int _getPost(int index) => index + 1;
-
-  void jumpToPage() {
-    this._cntrl.jumpTo(0);
+  Widget _wrapPage(Color color, String text, Function onMove, double angle) {
+    return Transform(
+      alignment: FractionalOffset.topCenter,
+      transform: Matrix4.identity()
+        ..rotateY(angle)
+        ..rotateZ(angle),
+      child: CarouselPage(
+        color: color,
+        text: text,
+        onMove: onMove,
+      ),
+    );
   }
 }
 
+/**
+ * 
+ */
 class CarouselPage extends StatelessWidget {
   final Color color;
   final String text;
@@ -277,7 +215,7 @@ class CarouselPage extends StatelessWidget {
   Widget build(BuildContext cntxt) {
     return Container(
         height: MediaQuery.of(cntxt).size.height,
-        color: this.color,
+        color: color,
         child: Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
