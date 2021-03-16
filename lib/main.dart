@@ -53,6 +53,7 @@ class _TransformerCarouselWidgetState extends State<TransformerCarouselWidget> {
   double _partialPage = 0.0;
   int _page = 0;
   bool _forward = true;
+  double PI = 3.141592;
 
   @override
   void initState() {
@@ -65,11 +66,11 @@ class _TransformerCarouselWidgetState extends State<TransformerCarouselWidget> {
     this._cntrl = PageController();
 
     this._cntrl.addListener(() {
-      this.setState(() {
-        this._partialPage = this._cntrl.page;
-      });
+      //this.setState(() {
+      this._partialPage = this._cntrl.page;
+      //});
 
-      this._dumpListenInfo();
+      //this._dumpListenInfo();
     });
   }
 
@@ -92,29 +93,156 @@ class _TransformerCarouselWidgetState extends State<TransformerCarouselWidget> {
           });
         },
         itemBuilder: (BuildContext context, int index) {
-          dumpPageInfo(index);
+          //dumpPageInfo(index);
+          //dumpForwardBackward(index);
 
           final offset = this._partialPage - this._partialPage.toInt();
 
-          return Transform(
-            transform: Matrix4.identity()
-              ..rotateY(offset)
-              ..rotateZ(offset),
-            alignment: FractionalOffset.center,
-            child: CarouselPage(
-              onMove: (target) {
-                this._cntrl.jumpToPage(target);
-              },
-              text: index.toString(),
-              color: Color.fromARGB(255, Random().nextInt(256),
-                  Random().nextInt(256), Random().nextInt(256)),
-            ),
-          );
+          int from = this.getFrom(index);
+          int to = this.getTo(index);
+
+          print("index: $index from: $from to: $to forward: $_forward");
+
+          if (_forward) {
+            if (index == from) {
+              return Transform(
+                transform: Matrix4.identity()
+                  ..rotateY(offset)
+                  ..rotateZ(offset),
+                alignment: FractionalOffset.center,
+                child: CarouselPage(
+                  onMove: (target) {
+                    this._cntrl.jumpToPage(target);
+                  },
+                  text: index.toString(),
+                  color: Color.fromARGB(255, Random().nextInt(256),
+                      Random().nextInt(256), Random().nextInt(256)),
+                ),
+              );
+            } else if (index == to) {
+              return Transform(
+                transform: Matrix4.identity()
+                  ..rotateY(0.0)
+                  ..rotateZ(0.0),
+                alignment: FractionalOffset.center,
+                child: CarouselPage(
+                  onMove: (target) {
+                    this._cntrl.jumpToPage(target);
+                  },
+                  text: index.toString(),
+                  color: Color.fromARGB(255, Random().nextInt(256),
+                      Random().nextInt(256), Random().nextInt(256)),
+                ),
+              );
+            } else {
+              return Transform(
+                transform: Matrix4.identity()
+                  ..rotateY(offset)
+                  ..rotateZ(offset),
+                alignment: FractionalOffset.center,
+                child: CarouselPage(
+                  onMove: (target) {
+                    this._cntrl.jumpToPage(target);
+                  },
+                  text: index.toString(),
+                  color: Color.fromARGB(255, Random().nextInt(256),
+                      Random().nextInt(256), Random().nextInt(256)),
+                ),
+              );
+            }
+          } else {
+            if (index == from) {
+              return Transform(
+                transform: Matrix4.identity()
+                  ..rotateY(-offset)
+                  ..rotateZ(-offset),
+                alignment: FractionalOffset.center,
+                child: CarouselPage(
+                  onMove: (target) {
+                    this._cntrl.jumpToPage(target);
+                  },
+                  text: index.toString(),
+                  color: Color.fromARGB(255, Random().nextInt(256),
+                      Random().nextInt(256), Random().nextInt(256)),
+                ),
+              );
+            } else if (index == to) {
+              return Transform(
+                transform: Matrix4.identity()
+                  ..rotateY(0.0)
+                  ..rotateZ(0.0),
+                alignment: FractionalOffset.center,
+                child: CarouselPage(
+                  onMove: (target) {
+                    this._cntrl.jumpToPage(target);
+                  },
+                  text: index.toString(),
+                  color: Color.fromARGB(255, Random().nextInt(256),
+                      Random().nextInt(256), Random().nextInt(256)),
+                ),
+              );
+            } else {
+              return Transform(
+                transform: Matrix4.identity()
+                  ..rotateY(-offset)
+                  ..rotateZ(-offset),
+                alignment: FractionalOffset.center,
+                child: CarouselPage(
+                  onMove: (target) {
+                    this._cntrl.jumpToPage(target);
+                  },
+                  text: index.toString(),
+                  color: Color.fromARGB(255, Random().nextInt(256),
+                      Random().nextInt(256), Random().nextInt(256)),
+                ),
+              );
+            }
+          }
         },
         itemCount: NUM_ITEMS);
   }
 
+  bool focus(int number) => true;
+
+  bool swipedTo(int number) => true;
+
+  bool swipedFrom(int number) => true;
+
   bool _isValidIndex(int index) => ((0 <= index) && (index <= NUM_ITEMS - 1));
+
+  void dumpForwardBackward(int target) {
+    print("page: $target partial: $_partialPage");
+    if (this._forward) {
+      print("from: ${this._partialPage.floor().toInt()}");
+      print("to: ${(this._partialPage + 1).floor()}");
+    } else {
+      print("from: ${this._partialPage.ceil()}");
+      print("to: ${this._partialPage.floor()}");
+    }
+  }
+
+  int getTo(int target) {
+    int to = target;
+    if (this._forward) {
+      to = (this._partialPage + 1).floor();
+    } else {
+      to = this._partialPage.floor();
+    }
+
+    return to;
+  }
+
+  int getFrom(int target) {
+    int from = target;
+
+    if (this._forward) {
+      from = this._partialPage.floor().toInt();
+    } else {
+      from = this._partialPage.ceil();
+    }
+
+    return from;
+  }
 
   void dumpPageInfo(int index) {
     print("GONNA BUILD page for ${index}");
