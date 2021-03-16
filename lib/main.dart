@@ -80,6 +80,8 @@ class _TransformerCarouselWidgetState extends State<TransformerCarouselWidget> {
     print("(floor) is ${this._partialPage.floor()}");
   }
 
+  double FRACTION = 0.3;
+
   @override
   Widget build(BuildContext cntxt) {
     return PageView.builder(
@@ -104,12 +106,13 @@ class _TransformerCarouselWidgetState extends State<TransformerCarouselWidget> {
           print("index: $index from: $from to: $to forward: $_forward");
 
           if (_forward) {
-            if (index == from) {
+            if ((index == from) ||
+                ((from - FRACTION) <= index) && (index <= (from + FRACTION))) {
               return Transform(
                 transform: Matrix4.identity()
                   ..rotateY(offset)
                   ..rotateZ(offset),
-                alignment: FractionalOffset.center,
+                alignment: FractionalOffset.topCenter,
                 child: CarouselPage(
                   onMove: (target) {
                     this._cntrl.jumpToPage(target);
@@ -119,12 +122,13 @@ class _TransformerCarouselWidgetState extends State<TransformerCarouselWidget> {
                       Random().nextInt(256), Random().nextInt(256)),
                 ),
               );
-            } else if (index == to) {
+            } else if ((index == to) ||
+                ((to - FRACTION) <= index) && (index <= (to + FRACTION))) {
               return Transform(
                 transform: Matrix4.identity()
                   ..rotateY(0.0)
                   ..rotateZ(0.0),
-                alignment: FractionalOffset.center,
+                alignment: FractionalOffset.topCenter,
                 child: CarouselPage(
                   onMove: (target) {
                     this._cntrl.jumpToPage(target);
@@ -139,7 +143,7 @@ class _TransformerCarouselWidgetState extends State<TransformerCarouselWidget> {
                 transform: Matrix4.identity()
                   ..rotateY(offset)
                   ..rotateZ(offset),
-                alignment: FractionalOffset.center,
+                alignment: FractionalOffset.topCenter,
                 child: CarouselPage(
                   onMove: (target) {
                     this._cntrl.jumpToPage(target);
@@ -151,12 +155,13 @@ class _TransformerCarouselWidgetState extends State<TransformerCarouselWidget> {
               );
             }
           } else {
-            if (index == from) {
+            if ((index == from) ||
+                ((from - FRACTION) <= index) && (index <= (from + FRACTION))) {
               return Transform(
                 transform: Matrix4.identity()
                   ..rotateY(-offset)
                   ..rotateZ(-offset),
-                alignment: FractionalOffset.center,
+                alignment: FractionalOffset.topCenter,
                 child: CarouselPage(
                   onMove: (target) {
                     this._cntrl.jumpToPage(target);
@@ -166,12 +171,13 @@ class _TransformerCarouselWidgetState extends State<TransformerCarouselWidget> {
                       Random().nextInt(256), Random().nextInt(256)),
                 ),
               );
-            } else if (index == to) {
+            } else if ((index == to) ||
+                ((to - FRACTION) <= index) && (index <= (to + FRACTION))) {
               return Transform(
                 transform: Matrix4.identity()
                   ..rotateY(0.0)
                   ..rotateZ(0.0),
-                alignment: FractionalOffset.center,
+                alignment: FractionalOffset.topCenter,
                 child: CarouselPage(
                   onMove: (target) {
                     this._cntrl.jumpToPage(target);
@@ -186,7 +192,7 @@ class _TransformerCarouselWidgetState extends State<TransformerCarouselWidget> {
                 transform: Matrix4.identity()
                   ..rotateY(-offset)
                   ..rotateZ(-offset),
-                alignment: FractionalOffset.center,
+                alignment: FractionalOffset.topCenter,
                 child: CarouselPage(
                   onMove: (target) {
                     this._cntrl.jumpToPage(target);
@@ -220,6 +226,8 @@ class _TransformerCarouselWidgetState extends State<TransformerCarouselWidget> {
       print("to: ${this._partialPage.floor()}");
     }
   }
+
+  bool shouldBeConsideredFrom(int target, int from) {}
 
   int getTo(int target) {
     int to = target;
