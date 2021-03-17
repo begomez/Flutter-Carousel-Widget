@@ -34,28 +34,28 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
-      child: PageCarouselWidget(),
+      child: CarouselPageView(),
     ));
   }
 }
 
-class PageCarouselWidget extends StatefulWidget {
-  PageCarouselWidget({Key key}) : super(key: key);
+class CarouselPageView extends StatefulWidget {
+  CarouselPageView({Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _PageCarouselWidgetState();
+    return _CarouselPageViewState();
   }
 }
 
-class _PageCarouselWidgetState extends State<PageCarouselWidget> {
+class _CarouselPageViewState extends State<CarouselPageView> {
   PageController _cntrl;
   double _partialPage = 0.0;
   int _page = 0;
   bool _goingForward = true;
   static const double PI = 3.141592;
 
-  _PageCarouselWidgetState() : super();
+  _CarouselPageViewState() : super();
 
   @override
   void initState() {
@@ -235,11 +235,18 @@ class CarouselPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(text.toString()),
-                      FlatButton(
-                        child: Text("Jump"),
-                        onPressed: () {
-                          this.onMove(5);
-                        },
+                      Container(
+                        margin: const EdgeInsets.all(8.0),
+                        child: FlatButton(
+                          color: Colors.orange,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("Jump"),
+                          ),
+                          onPressed: () {
+                            this.onMove(Random().nextInt(NUM_ITEMS));
+                          },
+                        ),
                       )
                     ],
                   ),
