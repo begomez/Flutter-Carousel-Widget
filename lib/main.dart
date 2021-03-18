@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 
 void main() {
   runApp(MyApp());
@@ -61,10 +62,10 @@ class _CarouselPageViewState extends State<CarouselPageView> {
   void initState() {
     super.initState();
 
-    this._initPageController();
+    this._initPagerComponents();
   }
 
-  void _initPageController() {
+  void _initPagerComponents() {
     this._cntrl = PageController();
 
     this._cntrl.addListener(() {
@@ -95,8 +96,13 @@ class _CarouselPageViewState extends State<CarouselPageView> {
 
   @override
   Widget build(BuildContext cntxt) {
+    final bsf = BouncingScrollPhysics();
+
+    //bsf.frictionFactor(0.0);
+
     return PageView.builder(
         pageSnapping: true,
+        physics: bsf,
         controller: this._cntrl,
         onPageChanged: (int newPage) {
           this._storeCurrentPage(newPage);
