@@ -117,10 +117,14 @@ class _CarouselPageViewState extends State<CarouselPageView> {
 
           // LEFT 2 RIGHT
           if (_goingForward) {
-            if (index == to) {
+            if (index == from) {
               return _wrapPage(Colors.red, index.toString(), (int page) {
                 this._jumpToPage(page);
-              }, 0.0);
+              }, offset);
+            } else if (index == to) {
+              return _wrapPage(Colors.red, index.toString(), (int page) {
+                this._jumpToPage(page);
+              }, -(PI / 4.0) + offset);
             } else {
               return _wrapPage(Colors.yellow, index.toString(), (int page) {
                 this._jumpToPage(page);
@@ -133,10 +137,14 @@ class _CarouselPageViewState extends State<CarouselPageView> {
               return _wrapPage(Colors.green, index.toString(), (int page) {
                 this._jumpToPage(page);
               }, 0.0);
+            } else if (index == to) {
+              return _wrapPage(Colors.green, index.toString(), (int page) {
+                this._jumpToPage(page);
+              }, offset);
             } else {
               return _wrapPage(Colors.blue, index.toString(), (int page) {
                 this._jumpToPage(page);
-              }, offset);
+              }, 0.0);
             }
           }
         },
