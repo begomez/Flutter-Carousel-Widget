@@ -1,4 +1,4 @@
-# test_carousel
+# Flutter Carousel Widget
 
 Bouncing page view carousel for Flutter.
 
